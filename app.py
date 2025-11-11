@@ -37,9 +37,15 @@ except Exception as e:
 
 MODEL_NAME = st.sidebar.selectbox(
     "Model",
-    options=["gemini-1.5-flash", "gemini-1.5-pro"],
+    options=["gemini-1.5-flash-latest", "gemini-1.5-pro-latest"],
     index=0,
 )
+
+# Fallback map in case a selected name is unavailable in the deployed region/API version
+FALLBACK_MODELS = {
+    "gemini-1.5-flash": "gemini-1.5-flash-latest",
+    "gemini-1.5-pro": "gemini-1.5-pro-latest",
+}
 
 system_prompt = st.sidebar.text_area(
     "System prompt (optional)",
@@ -71,7 +77,9 @@ if prompt := st.chat_input("Type your message..."):
         history.append({"role": role, "parts": [m["content"]]})
 
     try:
-        model = genai.GenerativeModel(MODEL_NAME)
+        # Resolve to a safe model name if needed
+        resolved_model = FALLBACK_MODELS.get(MODEL_NAME, MODEL_NAME)
+        model = genai.GenerativeModel(resolved_model)
         chat = model.start_chat(history=history)
         response = chat.send_message(prompt)
         text = getattr(response, "text", None)
