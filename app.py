@@ -11,13 +11,13 @@ st.set_page_config(page_title="Gemini Chat", page_icon="💬", layout="centered"
 st.title("💬 Streamlit + Gemini Chat")
 st.caption("Powered by Google Gemini 1.5 Flash")
 
- # Retrieve API key: prefer environment variable, fallback to Streamlit secrets if available
- api_key = os.environ.get("GEMINI_API_KEY")
- if not api_key:
-     try:
-         api_key = st.secrets["GEMINI_API_KEY"]
-     except Exception:
-         api_key = None
+# Retrieve API key: prefer environment variable, fallback to Streamlit secrets if available
+api_key = os.environ.get("GEMINI_API_KEY")
+if not api_key:
+    try:
+        api_key = st.secrets["GEMINI_API_KEY"]
+    except Exception:
+        api_key = None
 
 if not api_key:
     st.error(
